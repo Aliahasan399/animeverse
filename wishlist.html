@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist — AnimeVerse</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .wishlist-page { padding-top: 5rem; padding-bottom: 3rem; }
+    .wishlist-page h1 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .wishlist-page .breadcrumb { padding-bottom: 1rem; }
+    .wishlist-count { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 1.5rem; }
+    .wishlist-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+    @media (max-width: 820px) { .wishlist-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 420px) { .wishlist-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">AnimeVerse</span>
+      </a>
+      <div class="nav-menu" id="navMenu">
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="shop.html" class="nav-link">Shop</a>
+          <a href="shop.html?cat=Figures" class="nav-link">Figures</a>
+          <a href="shop.html?cat=Apparel" class="nav-link">Apparel</a>
+          <a href="shop.html?cat=Manga" class="nav-link">Manga</a>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-action-btn" onclick="window.location.href='shop.html'">🔍</button>
+        <button class="nav-action-btn" onclick="window.location.href='wishlist.html'" style="color:var(--secondary);">
+          ♥<span class="nav-badge" id="wishlistBadge">0</span>
+        </button>
+        <button class="nav-action-btn" onclick="window.location.href='cart.html'">
+          🛒<span class="nav-badge" id="cartBadge">0</span>
+        </button>
+        <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container wishlist-page">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Wishlist</span>
+    </div>
+    <h1>♥ My Wishlist</h1>
+    <p class="wishlist-count" id="wishlistCount">0 items saved</p>
+    <div class="wishlist-grid" id="wishlistGrid"></div>
+  </div>
+
+  <footer class="footer" style="margin-top:0;">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><span class="logo-icon">✦</span><span class="logo-text">AnimeVerse</span></a>
+          <p>Your ultimate destination for premium anime merchandise.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <a href="shop.html?cat=Figures">Figures</a>
+          <a href="shop.html?cat=Apparel">Apparel</a>
+          <a href="shop.html?cat=Manga">Manga</a>
+          <a href="shop.html?cat=Accessories">Accessories</a>
+          <a href="shop.html?cat=Posters">Posters</a>
+          <a href="shop.html?cat=Plushies">Plushies</a>
+        </div>
+        <div class="footer-col"><h4>Support</h4><a href="#">Help Center</a><a href="#">Shipping Info</a><a href="#">Returns</a><a href="#">Contact Us</a></div>
+        <div class="footer-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Blog</a><a href="#">Affiliates</a></div>
+        <div class="footer-col"><h4>Legal</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+      </div>
+      <div class="footer-bottom"><p>© 2026 AnimeVerse. All rights reserved.</p></div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function() {
+      function render() {
+        AnimeVerse.loadState();
+        AnimeVerse.updateBadges();
+
+        const ids = AnimeVerse.getWishlist();
+        const products = ids.map(id => getProduct(id)).filter(Boolean);
+        const grid = document.getElementById('wishlistGrid');
+        document.getElementById('wishlistCount').textContent = `${products.length} items saved`;
+
+        if (products.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column:1/-1;">
+              <div class="empty-state">
+                <div class="empty-state-icon">♡</div>
+                <h3>Your wishlist is empty</h3>
+                <p>Save items you love by clicking the ♡ heart icon on any product.</p>
+                <a href="shop.html" class="btn btn-primary">Browse Products</a>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = products.map(p => AnimeVerse.renderProductCard(p)).join('');
+      }
+
+      render();
+    })();
+  </script>
+</body>
+</html>

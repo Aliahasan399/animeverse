@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart — AnimeVerse</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .cart-page {
+      padding-top: 5rem;
+      padding-bottom: 3rem;
+    }
+
+    .cart-page .breadcrumb { padding-bottom: 1rem; }
+
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 1rem;
+      padding: 1.25rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      align-items: center;
+    }
+
+    .cart-item-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+    }
+
+    .cart-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cart-item-info h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+
+    .cart-item-info p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-info .price {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .cart-item-actions .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .cart-item-actions .qty-control button {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .cart-item-actions .qty-control button:hover {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    .cart-item-actions .qty-control span {
+      width: 36px;
+      height: 32px;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .cart-item-actions .remove-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0.35rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .cart-item-actions .remove-btn:hover {
+      color: var(--secondary);
+      background: var(--secondary-dim);
+    }
+
+    .cart-item-total {
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    /* Summary sidebar */
+    .cart-summary {
+      position: sticky;
+      top: 5rem;
+      padding: 1.5rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+
+    .cart-summary h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .summary-row.total {
+      border-top: 1px solid var(--border);
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    .summary-row.total .amount {
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .summary-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .cart-empty {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 820px) {
+      .cart-layout { grid-template-columns: 1fr; }
+      .cart-summary { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      .cart-item {
+        grid-template-columns: 80px 1fr;
+        gap: 0.75rem;
+      }
+      .cart-item-image { width: 80px; height: 80px; }
+      .cart-item-actions { grid-column: 1 / -1; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">AnimeVerse</span>
+      </a>
+      <div class="nav-menu" id="navMenu">
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="shop.html" class="nav-link">Shop</a>
+          <a href="shop.html?cat=Figures" class="nav-link">Figures</a>
+          <a href="shop.html?cat=Apparel" class="nav-link">Apparel</a>
+          <a href="shop.html?cat=Manga" class="nav-link">Manga</a>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-action-btn" onclick="window.location.href='shop.html'">🔍</button>
+        <button class="nav-action-btn" id="wishlistBtn" onclick="window.location.href='wishlist.html'">
+          ♥<span class="nav-badge" id="wishlistBadge">0</span>
+        </button>
+        <button class="nav-action-btn" onclick="window.location.href='cart.html'" style="color:var(--accent);">
+          🛒<span class="nav-badge" id="cartBadge">0</span>
+        </button>
+        <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container cart-page">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Cart</span>
+    </div>
+
+    <h1 style="font-family:var(--font-display);font-size:1.8rem;font-weight:800;margin-bottom:1.5rem;">🛒 Shopping Cart</h1>
+
+    <div class="cart-layout">
+      <div class="cart-items" id="cartItems">
+        <!-- Populated by JS -->
+      </div>
+
+      <aside class="cart-summary" id="cartSummary">
+        <h3>Order Summary</h3>
+        <div id="summaryContent">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer" style="margin-top:0;">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><span class="logo-icon">✦</span><span class="logo-text">AnimeVerse</span></a>
+          <p>Your ultimate destination for premium anime merchandise.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <a href="shop.html?cat=Figures">Figures</a>
+          <a href="shop.html?cat=Apparel">Apparel</a>
+          <a href="shop.html?cat=Manga">Manga</a>
+          <a href="shop.html?cat=Accessories">Accessories</a>
+          <a href="shop.html?cat=Posters">Posters</a>
+          <a href="shop.html?cat=Plushies">Plushies</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Shipping Info</a>
+          <a href="#">Returns</a>
+          <a href="#">Contact Us</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About Us</a>
+          <a href="#">Blog</a>
+          <a href="#">Affiliates</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 AnimeVerse. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function() {
+      function render() {
+        AnimeVerse.loadState();
+        AnimeVerse.updateBadges();
+
+        const cart = AnimeVerse.getCart();
+        const container = document.getElementById('cartItems');
+        const summary = document.getElementById('summaryContent');
+
+        if (cart.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state cart-empty">
+              <div class="empty-state-icon">🛒</div>
+              <h3>Your cart is empty</h3>
+              <p>Looks like you haven't added anything yet. Explore our collection!</p>
+              <a href="shop.html" class="btn btn-primary">Browse Products</a>
+            </div>
+          `;
+          summary.innerHTML = `
+            <p style="color:var(--text-dim);font-size:0.88rem;">Add items to your cart to see the summary.</p>
+            <div class="summary-actions">
+              <a href="shop.html" class="btn btn-outline">Continue Shopping</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Render cart items
+        container.innerHTML = cart.map(item => {
+          const product = getProduct(item.id);
+          return `
+            <div class="cart-item" data-id="${item.id}">
+              <div class="cart-item-image">
+                <img src="${product ? product.image : 'https://placehold.co/200x200/1a1a2e/a29bfe?text=Product'}" alt="${item.name}" loading="lazy">
+              </div>
+              <div class="cart-item-info">
+                <h3>${item.name}</h3>
+                <p>${product ? product.series : ''}</p>
+                <span class="price">$${item.price.toFixed(2)}</span>
+              </div>
+              <div class="cart-item-total">$${(item.price * item.qty).toFixed(2)}</div>
+              <div class="cart-item-actions">
+                <div class="qty-control">
+                  <button onclick="window.cartPage.updateQty(${item.id}, ${item.qty - 1})">−</button>
+                  <span>${item.qty}</span>
+                  <button onclick="window.cartPage.updateQty(${item.id}, ${item.qty + 1})">+</button>
+                </div>
+                <button class="remove-btn" onclick="window.cartPage.removeItem(${item.id})">✕ Remove</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Summary
+        const subtotal = AnimeVerse.getCartTotal();
+        const shipping = subtotal >= 50 ? 0 : 4.99;
+        const tax = subtotal * 0.08;
+        const total = subtotal + shipping + tax;
+
+        summary.innerHTML = `
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span>$${subtotal.toFixed(2)}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span>${shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2)}</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax (8%)</span>
+            <span>$${tax.toFixed(2)}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total</span>
+            <span class="amount">$${total.toFixed(2)}</span>
+          </div>
+          <div class="summary-actions">
+            <button class="btn btn-primary" onclick="AnimeVerse.showToast('🔜 Checkout coming soon!')">
+              Proceed to Checkout →
+            </button>
+            <a href="shop.html" class="btn btn-outline">Continue Shopping</a>
+          </div>
+        `;
+      }
+
+      function updateQty(id, qty) {
+        if (qty < 1) { removeItem(id); return; }
+        AnimeVerse.updateCartQty(id, qty);
+        render();
+      }
+
+      function removeItem(id) {
+        AnimeVerse.removeFromCart(id);
+        const product = getProduct(id);
+        AnimeVerse.showToast(`🗑️ ${product ? product.name : 'Item'} removed from cart`);
+        render();
+      }
+
+      window.cartPage = { updateQty, removeItem };
+      render();
+    })();
+  </script>
+</body>
+</html>

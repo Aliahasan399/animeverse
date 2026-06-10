@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AnimeVerse — Your ultimate shop for anime figures, apparel, manga, accessories, posters, and plushies. Premium otaku gear with worldwide shipping.">
+  <meta name="theme-color" content="#0a0a14">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="AnimeVerse — Premium Anime Shop">
+  <meta property="og:description" content="Your ultimate destination for anime merchandise — figures, apparel, manga & more.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://animeverse.store">
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AnimeVerse",
+    "url": "https://animeverse.store",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://animeverse.store/shop.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <title>AnimeVerse — Premium Anime Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ─── Homepage-specific styles ─────────────────────── */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 6rem 0 4rem;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(108, 92, 231, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 30%, rgba(253, 121, 168, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 50% 80%, rgba(108, 92, 231, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      border-radius: 20px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(108, 92, 231, 0.2);
+      color: var(--accent-light);
+      font-size: 0.78rem;
+      font-weight: 600;
+      width: fit-content;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5.5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -1px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .hero-stat h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-stat p {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+    }
+
+    .hero-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hero-float-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .hero-float-item {
+      aspect-ratio: 1;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s var(--ease);
+    }
+
+    .hero-float-item:nth-child(1) { transform: translateY(-10px); }
+    .hero-float-item:nth-child(4) { transform: translateY(10px); }
+    .hero-float-item:hover { transform: translateY(-5px) scale(1.03); }
+
+    .hero-float-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ─── Categories ───────────────────────────────────── */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+    }
+
+    .category-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 2rem 1rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      text-align: center;
+      transition: all 0.35s var(--ease);
+      cursor: pointer;
+    }
+
+    .category-card:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      transform: translateY(-4px);
+      box-shadow: var(--glow-accent);
+    }
+
+    .category-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      border: 1px solid var(--border);
+      background: var(--glass-bg);
+    }
+
+    .category-card:hover .category-icon {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+    }
+
+    .category-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .category-count {
+      font-size: 0.74rem;
+      color: var(--text-dim);
+    }
+
+    /* ─── Featured / Trending ───────────────────────────── */
+    .featured-section {
+      background: var(--bg-surface);
+    }
+
+    .section-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    .featured-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .featured-nav button {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--glass-bg);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s var(--ease);
+      font-size: 0.85rem;
+    }
+
+    .featured-nav button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .featured-track {
+      display: flex;
+      gap: 1.25rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 0.5rem;
+    }
+
+    .featured-track::-webkit-scrollbar { display: none; }
+
+    .featured-track .product-card {
+      min-width: 260px;
+      scroll-snap-align: start;
+    }
+
+    /* ─── Newsletter ────────────────────────────────────── */
+    .newsletter {
+      text-align: center;
+      padding: 5rem 0;
+      position: relative;
+    }
+
+    .newsletter-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 50% 80% at 50% 50%, rgba(108, 92, 231, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .newsletter-card {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .newsletter-card h2 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+
+    .newsletter-card p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .newsletter-form input {
+      flex: 1;
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.25s var(--ease);
+    }
+
+    .newsletter-form input:focus {
+      border-color: var(--accent);
+    }
+
+    .newsletter-form input::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* ─── Features Strip ─────────────────────────────────── */
+    .features-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .feature-item-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(108, 92, 231, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .feature-item-text h4 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+
+    .feature-item-text p {
+      font-size: 0.74rem;
+      color: var(--text-dim);
+    }
+
+    /* ─── Responsive overrides ────────────────────────────── */
+    @media (max-width: 1024px) {
+      .categories-grid { grid-template-columns: repeat(3, 1fr); }
+      .features-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 820px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-visual { order: -1; }
+      .hero-float-grid { max-width: 320px; margin: 0 auto; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { min-height: 70vh; padding: 4rem 0 2rem; }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .category-card { padding: 1.25rem; }
+      .features-strip { grid-template-columns: 1fr; }
+      .newsletter-form { flex-direction: column; }
+      .featured-track .product-card { min-width: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════ NAVBAR ════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">AnimeVerse</span>
+      </a>
+
+      <div class="nav-menu" id="navMenu">
+        <div class="nav-links">
+          <a href="index.html" class="nav-link active">Home</a>
+          <a href="shop.html" class="nav-link">Shop</a>
+          <a href="shop.html" class="nav-link">Figures</a>
+          <a href="shop.html" class="nav-link">Apparel</a>
+          <a href="shop.html" class="nav-link">Manga</a>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button class="nav-action-btn" onclick="window.location.href='shop.html'" aria-label="Search">
+          🔍
+        </button>
+        <button class="nav-action-btn" id="wishlistBtn" onclick="window.location.href='wishlist.html'" aria-label="Wishlist">
+          ♥
+          <span class="nav-badge" id="wishlistBadge">0</span>
+        </button>
+        <button class="nav-action-btn" id="cartBtn" onclick="window.location.href='cart.html'" aria-label="Cart">
+          🛒
+          <span class="nav-badge" id="cartBadge">0</span>
+        </button>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════ HERO ════════════ -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge">🎉 Welcome to AnimeVerse</div>
+        <h1 class="hero-title">
+          Your Ultimate<br>
+          <span>Anime</span> Destination
+        </h1>
+        <p class="hero-desc">
+          Discover the finest collection of figures, apparel, manga, and accessories
+          from your favourite series. Premium quality, worldwide shipping.
+        </p>
+        <div class="hero-actions">
+          <a href="shop.html" class="btn btn-primary">
+            🛍️ Start Shopping
+          </a>
+          <a href="#featured" class="btn btn-outline">
+            Explore Featured
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <h3>5,000+</h3>
+            <p>Products</p>
+          </div>
+          <div class="hero-stat">
+            <h3>50+</h3>
+            <p>Series</p>
+          </div>
+          <div class="hero-stat">
+            <h3>98%</h3>
+            <p>Happy Customers</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-float-grid">
+          <div class="hero-float-item"><img src="https://placehold.co/400x400/1a1a2e/a29bfe?text=Naruto&font=raleway" alt="Naruto figure" loading="lazy"></div>
+          <div class="hero-float-item"><img src="https://placehold.co/400x400/2d1b3a/fd79a8?text=Hoodie&font=raleway" alt="Anime hoodie" loading="lazy"></div>
+          <div class="hero-float-item"><img src="https://placehold.co/400x400/16213e/fdcb6e?text=Manga&font=raleway" alt="Manga collection" loading="lazy"></div>
+          <div class="hero-float-item"><img src="https://placehold.co/400x400/1e1e3a/6c5ce7?text=Accessories&font=raleway" alt="Anime accessories" loading="lazy"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ FEATURES STRIP ════════════ -->
+  <div class="container">
+    <div class="features-strip">
+      <div class="feature-item">
+        <div class="feature-item-icon">🚚</div>
+        <div class="feature-item-text">
+          <h4>Free Shipping</h4>
+          <p>On orders over $50</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-item-icon">🔒</div>
+        <div class="feature-item-text">
+          <h4>Secure Checkout</h4>
+          <p>256-bit encrypted</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-item-icon">🔄</div>
+        <div class="feature-item-text">
+          <h4>Easy Returns</h4>
+          <p>30-day guarantee</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-item-icon">💬</div>
+        <div class="feature-item-text">
+          <h4>24/7 Support</h4>
+          <p>We're here to help</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ CATEGORIES ════════════ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Browse</span>
+        <h2 class="section-title">Shop by Category</h2>
+        <p class="section-desc">Find everything you need from your favourite anime series</p>
+      </div>
+      <div class="categories-grid" id="categoriesGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ FEATURED PRODUCTS ════════════ -->
+  <section class="section featured-section" id="featured">
+    <div class="container">
+      <div class="section-header" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="text-align:left;">
+          <span class="section-label">Featured</span>
+          <h2 class="section-title" style="margin-bottom:0;">Trending Now</h2>
+        </div>
+        <div class="section-actions">
+          <div class="featured-nav">
+            <button id="featuredScrollLeft" aria-label="Scroll left">‹</button>
+            <button id="featuredScrollRight" aria-label="Scroll right">›</button>
+          </div>
+          <a href="shop.html" class="btn btn-outline btn-sm">View All →</a>
+        </div>
+      </div>
+      <div class="featured-track" id="featuredTrack">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ NEWSLETTER ════════════ -->
+  <section class="newsletter">
+    <div class="newsletter-bg"></div>
+    <div class="container">
+      <div class="newsletter-card">
+        <h2>📬 Stay in the Loop</h2>
+        <p>Get exclusive drops, restock alerts, and member-only discounts straight to your inbox.</p>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); AnimeVerse.showToast('📧 Subscribed! Welcome to the club.')">
+          <input type="email" placeholder="Enter your email" required>
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════ FOOTER ════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom:0;">
+            <span class="logo-icon">✦</span>
+            <span class="logo-text">AnimeVerse</span>
+          </a>
+          <p>Your ultimate destination for premium anime merchandise. Figures, apparel, manga, and more from the series you love.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">📷</a>
+            <a href="#" aria-label="Discord">💬</a>
+            <a href="#" aria-label="TikTok">🎵</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <a href="shop.html?cat=Figures">Figures</a>
+          <a href="shop.html?cat=Apparel">Apparel</a>
+          <a href="shop.html?cat=Manga">Manga</a>
+          <a href="shop.html?cat=Accessories">Accessories</a>
+          <a href="shop.html?cat=Posters">Posters</a>
+          <a href="shop.html?cat=Plushies">Plushies</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Shipping Info</a>
+          <a href="#">Returns</a>
+          <a href="#">Size Guide</a>
+          <a href="#">Contact Us</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About Us</a>
+          <a href="#">Careers</a>
+          <a href="#">Blog</a>
+          <a href="#">Affiliates</a>
+          <a href="#">Press</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+          <a href="#">DMCA</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 AnimeVerse. All rights reserved. Not affiliated with any anime studios or publishers.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ════════════ SCRIPTS ════════════ -->
+  <script src="js/products.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // ─── Categories ────────────────────────────────────────
+    const CATEGORY_DATA = [
+      { name: 'Figures',    icon: '🗿', count: 6 },
+      { name: 'Apparel',    icon: '👕', count: 6 },
+      { name: 'Manga',      icon: '📚', count: 6 },
+      { name: 'Accessories', icon: '✨', count: 6 },
+      { name: 'Posters',    icon: '🖼️', count: 6 },
+      { name: 'Plushies',   icon: '🧸', count: 6 },
+    ];
+
+    const catGrid = document.getElementById('categoriesGrid');
+    if (catGrid) {
+      catGrid.innerHTML = CATEGORY_DATA.map(cat => `
+        <a href="shop.html?cat=${cat.name}" class="category-card">
+          <div class="category-icon">${cat.icon}</div>
+          <div class="category-name">${cat.name}</div>
+          <div class="category-count">${cat.count} Products</div>
+        </a>
+      `).join('');
+    }
+
+    // ─── Featured Track ────────────────────────────────────
+    const featuredTrack = document.getElementById('featuredTrack');
+    if (featuredTrack && typeof PRODUCTS !== 'undefined') {
+      // Pick hot/new/high-rated products
+      const featured = PRODUCTS.filter(p => p.badge === 'hot' || p.badge === 'new' || p.rating >= 4.7);
+      const shuffled = [...featured].sort(() => Math.random() - 0.5).slice(0, 8);
+      const sorted = shuffled.sort((a, b) => b.rating - a.rating);
+
+      featuredTrack.innerHTML = sorted.map(p => AnimeVerse.renderProductCard(p)).join('');
+
+      // Scroll controls
+      document.getElementById('featuredScrollLeft')?.addEventListener('click', () => {
+        featuredTrack.scrollBy({ left: -300, behavior: 'smooth' });
+      });
+      document.getElementById('featuredScrollRight')?.addEventListener('click', () => {
+        featuredTrack.scrollBy({ left: 300, behavior: 'smooth' });
+      });
+    }
+  </script>
+</body>
+</html>
