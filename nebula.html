@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nebula Dreams — Interactive Particle Cosmos</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      overflow: hidden;
+      background: #0a0a14;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      cursor: none;
+      user-select: none;
+    }
+
+    canvas {
+      display: block;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* ── Ambient glow behind particles ── */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 30%, rgba(108, 92, 231, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 80% 70%, rgba(253, 121, 168, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0, 206, 201, 0.04) 0%, transparent 70%);
+    }
+
+    /* ── Title overlay ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .title {
+      font-size: clamp(2rem, 6vw, 5rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: transparent;
+      background: linear-gradient(135deg, #a29bfe 0%, #fd79a8 40%, #fdcb6e 70%, #a29bfe 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: gradient-shift 6s ease-in-out infinite;
+      text-shadow: none;
+      filter: drop-shadow(0 0 40px rgba(108, 92, 231, 0.3));
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin-top: 0.75rem;
+      font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.25);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      animation: fade-pulse 4s ease-in-out infinite;
+    }
+
+    .hint {
+      position: fixed;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.12);
+      letter-spacing: 2px;
+      pointer-events: none;
+      z-index: 2;
+      animation: fade-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes fade-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ── Instructions (fade out on interaction) ── */
+    .instructions {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 2rem;
+      pointer-events: none;
+      z-index: 2;
+      transition: opacity 1s ease;
+    }
+
+    .instructions.hidden { opacity: 0; }
+
+    .instruction-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: rgba(255, 255, 255, 0.2);
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .instruction-item .icon {
+      font-size: 1.2rem;
+      opacity: 0.4;
+    }
+
+    /* ── Cursor follower ── */
+    .cursor-ring {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(162, 155, 254, 0.3);
+      pointer-events: none;
+      z-index: 3;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  border-color 0.4s ease,
+                  opacity 0.4s ease;
+      mix-blend-mode: screen;
+    }
+
+    .cursor-ring.burst {
+      width: 100px;
+      height: 100px;
+      border-color: rgba(253, 121, 168, 0.5);
+      opacity: 0;
+    }
+
+    /* ── Corner badge ── */
+    .badge-corner {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.5rem;
+      z-index: 2;
+      pointer-events: none;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.06);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient"></div>
+  <canvas id="cosmos"></canvas>
+
+  <div class="overlay">
+    <h1 class="title">Nebula Dreams</h1>
+    <p class="subtitle">✦ Move · Click · Drift ✦</p>
+  </div>
+
+  <div class="instructions">
+    <div class="instruction-item">
+      <span class="icon">🖱️</span>
+      <span>Move to flow</span>
+    </div>
+    <div class="instruction-item">
+      <span class="icon">💫</span>
+      <span>Click to burst</span>
+    </div>
+    <div class="instruction-item">
+      <span class="icon">🔄</span>
+      <span>Shake device</span>
+    </div>
+  </div>
+
+  <p class="hint">✦ · ✦ · ✦</p>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="badge-corner">✦ AnimeVerse</div>
+
+  <script>
+    // ─── CANVAS SETUP ─────────────────────────────────────
+    const canvas = document.getElementById('cosmos');
+    const ctx = canvas.getContext('2d');
+    const ring = document.getElementById('cursorRing');
+
+    let W, H, CX, CY;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      CX = W / 2;
+      CY = H / 2;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // ─── MOUSE / TOUCH ─────────────────────────────────────
+    const mouse = { x: CX, y: CY, tx: CX, ty: CY, down: false };
+    let burstQueue = [];
+
+    function updateMouse(x, y) {
+      mouse.tx = x;
+      mouse.ty = y;
+      ring.style.left = x + 'px';
+      ring.style.top = y + 'px';
+
+      // Hide instructions after first move
+      document.querySelector('.instructions')?.classList.add('hidden');
+    }
+
+    canvas.addEventListener('mousemove', e => {
+      updateMouse(e.clientX, e.clientY);
+    });
+
+    canvas.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      updateMouse(t.clientX, t.clientY);
+    }, { passive: true });
+
+    canvas.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      updateMouse(t.clientX, t.clientY);
+      triggerBurst(t.clientX, t.clientY);
+    }, { passive: true });
+
+    canvas.addEventListener('mousedown', e => {
+      mouse.down = true;
+      triggerBurst(e.clientX, e.clientY);
+    });
+
+    canvas.addEventListener('mouseup', () => { mouse.down = false; });
+
+    // ─── BURST ─────────────────────────────────────────────
+    function triggerBurst(x, y) {
+      burstQueue.push({ x, y, time: Date.now() });
+
+      // Ring animation
+      ring.classList.remove('burst');
+      void ring.offsetWidth; // force reflow
+      ring.classList.add('burst');
+      setTimeout(() => ring.classList.remove('burst'), 600);
+    }
+
+    // ─── PARTICLES ─────────────────────────────────────────
+    const PARTICLE_COUNT = 280;
+    const particles = [];
+
+    const PALETTE = [
+      { r: 162, g: 155, b: 254 },  // lavender (#a29bfe)
+      { r: 253, g: 121, b: 168 },  // pink (#fd79a8)
+      { r: 108, g: 92,  b: 231 },  // purple (#6c5ce7)
+      { r: 0,   g: 206, b: 201 },  // teal (#00cec9)
+      { r: 253, g: 203, b: 110 },  // gold (#fdcb6e)
+      { r: 85,  g: 239, b: 196 },  // mint (#55efc4)
+    ];
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.random() * Math.min(W, H) * 0.5;
+      const col = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+      particles.push({
+        // Position in 3D space
+        px: (Math.random() - 0.5) * W * 1.5,
+        py: (Math.random() - 0.5) * H * 1.5,
+        pz: Math.random() * 800 - 200,
+
+        // Velocity
+        vx: 0,
+        vy: 0,
+        vz: 0,
+
+        // Home position (for return drift)
+        homeX: (Math.random() - 0.5) * W * 1.2,
+        homeY: (Math.random() - 0.5) * H * 1.2,
+        homeZ: Math.random() * 600 - 100,
+
+        // Properties
+        size: Math.random() * 3 + 0.5,
+        color: col,
+        baseAlpha: Math.random() * 0.6 + 0.2,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.3 + 0.1,
+        orbitRadius: Math.random() * 80 + 10,
+        orbitSpeed: (Math.random() - 0.5) * 0.005,
+        orbitAngle: Math.random() * Math.PI * 2,
+      });
+    }
+
+    // ─── CONSTELLATION LINES ─────────────────────────────
+    function distance3D(a, b) {
+      const dx = a.px - b.px;
+      const dy = a.py - b.py;
+      const dz = a.pz - b.pz;
+      return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    // ─── BURST PARTICLES ──────────────────────────────────
+    let burstParticles = [];
+
+    function createBurstEffect(x, y, z) {
+      const count = 40 + Math.floor(Math.random() * 30);
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const angle2 = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 8 + 3;
+        const col = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+        burstParticles.push({
+          x, y, z,
+          vx: Math.cos(angle) * Math.sin(angle2) * speed,
+          vy: Math.sin(angle) * Math.sin(angle2) * speed,
+          vz: Math.cos(angle2) * speed,
+          life: 1,
+          decay: Math.random() * 0.015 + 0.008,
+          size: Math.random() * 3 + 1,
+          color: col,
+        });
+      }
+    }
+
+    // ─── ANIMATION LOOP ───────────────────────────────────
+    function project(x, y, z) {
+      const focal = 500;
+      const scale = focal / (focal + z);
+      return {
+        sx: x * scale + CX,
+        sy: y * scale + CY,
+        scale,
+      };
+    }
+
+    function animate() {
+      // Smooth mouse follow
+      mouse.x += (mouse.tx - mouse.x) * 0.08;
+      mouse.y += (mouse.ty - mouse.y) * 0.08;
+
+      const mx = (mouse.x - CX) / W;
+      const my = (mouse.y - CY) / H;
+      const mDist = Math.sqrt(mx * mx + my * my);
+      const mAngle = Math.atan2(my, mx);
+
+      // Clear with trail
+      ctx.fillStyle = 'rgba(10, 10, 20, 0.15)';
+      ctx.fillRect(0, 0, W, H);
+
+      // ── Update & sort particles ──
+      const projected = [];
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        const now = Date.now();
+
+        // Mouse influence — particles flow toward/around cursor
+        const dx = (mouse.x - CX) - p.px;
+        const dy = (mouse.y - CY) - p.py;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const influence = Math.max(0, 1 - dist / 350);
+
+        if (influence > 0) {
+          // Flow around the cursor (vortex)
+          const angle = Math.atan2(dy, dx) + Math.PI / 2;
+          const force = influence * 1.2;
+          p.vx += Math.cos(angle) * force * 0.04;
+          p.vy += Math.sin(angle) * force * 0.04;
+          p.vz += (200 - p.pz) * influence * 0.005;
+
+          // Pull toward cursor surface
+          p.vx += dx * influence * 0.008;
+          p.vy += dy * influence * 0.008;
+        }
+
+        // Return to home (gentle drift)
+        p.vx += (p.homeX - p.px) * 0.0006;
+        p.vy += (p.homeY - p.py) * 0.0006;
+        p.vz += (p.homeZ - p.pz) * 0.0006;
+
+        // Orbital motion
+        p.orbitAngle += p.orbitSpeed;
+        p.vx += Math.cos(p.orbitAngle) * 0.02;
+        p.vy += Math.sin(p.orbitAngle) * 0.02;
+
+        // Damping
+        p.vx *= 0.97;
+        p.vy *= 0.97;
+        p.vz *= 0.97;
+
+        // Update position
+        p.px += p.vx;
+        p.py += p.vy;
+        p.pz += p.vz;
+
+        // Wrap boundaries
+        const halfW = W * 1.2;
+        const halfH = H * 1.2;
+        if (p.px > halfW) p.px = -halfW;
+        if (p.px < -halfW) p.px = halfW;
+        if (p.py > halfH) p.py = -halfH;
+        if (p.py < -halfH) p.py = halfH;
+        if (p.pz > 600) p.pz = -200;
+        if (p.pz < -300) p.pz = 500;
+
+        // Project to 2D
+        const proj = project(p.px, p.py, p.pz);
+        proj.idx = i;
+        proj.particle = p;
+        if (proj.scale > 0 && proj.sx > -50 && proj.sx < W + 50 && proj.sy > -50 && proj.sy < H + 50) {
+          projected.push(proj);
+        }
+      }
+
+      // Sort by depth (far first)
+      projected.sort((a, b) => a.particle.pz - b.particle.pz);
+
+      // ── Constellation lines ──
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < projected.length; i++) {
+        for (let j = i + 1; j < projected.length; j++) {
+          const d = distance3D(projected[i].particle, projected[j].particle);
+          if (d < 100) {
+            const alpha = (1 - d / 100) * 0.12;
+            const p1 = projected[i];
+            const p2 = projected[j];
+            ctx.beginPath();
+            ctx.moveTo(p1.sx, p1.sy);
+            ctx.lineTo(p2.sx, p2.sy);
+            ctx.strokeStyle = `rgba(162, 155, 254, ${alpha})`;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ── Draw particles ──
+      for (const proj of projected) {
+        const p = proj.particle;
+        const alpha = p.baseAlpha * (0.6 + 0.4 * Math.sin(Date.now() * 0.001 + p.phase));
+        const depthFactor = Math.max(0.2, Math.min(1, (p.pz + 200) / 600));
+        const size = p.size * proj.scale * (0.7 + 0.3 * depthFactor);
+        const c = p.color;
+
+        // Glow outer
+        const glowSize = size * 4;
+        const gradient = ctx.createRadialGradient(proj.sx, proj.sy, 0, proj.sx, proj.sy, glowSize);
+        gradient.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha * 0.5})`);
+        gradient.addColorStop(0.3, `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha * 0.15})`);
+        gradient.addColorStop(1, `rgba(${c.r}, ${c.g}, ${c.b}, 0)`);
+
+        ctx.beginPath();
+        ctx.arc(proj.sx, proj.sy, glowSize, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // Core
+        ctx.beginPath();
+        ctx.arc(proj.sx, proj.sy, Math.max(0.5, size), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha * 0.9})`;
+        ctx.fill();
+      }
+
+      // ── Burst particles ──
+      for (let i = burstParticles.length - 1; i >= 0; i--) {
+        const b = burstParticles[i];
+        b.x += b.vx;
+        b.y += b.vy;
+        b.z += b.vz;
+        b.vx *= 0.96;
+        b.vy *= 0.96;
+        b.vz *= 0.96;
+        b.life -= b.decay;
+
+        if (b.life <= 0) {
+          burstParticles.splice(i, 1);
+          continue;
+        }
+
+        const proj = project(b.x, b.y, b.z);
+        if (proj.scale <= 0) continue;
+
+        const alpha = b.life * 0.9;
+        const size = b.size * proj.scale * b.life;
+        const c = b.color;
+
+        // Outer glow
+        const gSize = size * 5;
+        const grad = ctx.createRadialGradient(proj.sx, proj.sy, 0, proj.sx, proj.sy, gSize);
+        grad.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha * 0.6})`);
+        grad.addColorStop(0.2, `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha * 0.2})`);
+        grad.addColorStop(1, `rgba(${c.r}, ${c.g}, ${c.b}, 0)`);
+        ctx.beginPath();
+        ctx.arc(proj.sx, proj.sy, gSize, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Core
+        ctx.beginPath();
+        ctx.arc(proj.sx, proj.sy, Math.max(1, size), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha})`;
+        ctx.fill();
+
+        // Trail dot
+        ctx.beginPath();
+        ctx.arc(proj.sx - b.vx * 2, proj.sy - b.vy * 2, Math.max(0.5, size * 0.5), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha * 0.4})`;
+        ctx.fill();
+      }
+
+      // ── Process burst queue ──
+      while (burstQueue.length) {
+        const bq = burstQueue.shift();
+        if (Date.now() - bq.time > 200) continue;
+        const px = (bq.x - CX);
+        const py = (bq.y - CY);
+        createBurstEffect(px, py, 0);
+      }
+
+      // ── Mouse glow ──
+      const mg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 120);
+      mg.addColorStop(0, 'rgba(162, 155, 254, 0.04)');
+      mg.addColorStop(0.5, 'rgba(253, 121, 168, 0.025)');
+      mg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = mg;
+      ctx.fillRect(0, 0, W, H);
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // ─── AUTO BURST on idle ───────────────────────────────
+    let lastMove = Date.now();
+    const originalUpdate = updateMouse;
+    updateMouse = function(x, y) {
+      lastMove = Date.now();
+      originalUpdate(x, y);
+    };
+
+    setInterval(() => {
+      if (Date.now() - lastMove > 5000) {
+        // Random burst somewhere in the scene
+        const bx = CX + (Math.random() - 0.5) * W * 0.6;
+        const by = CY + (Math.random() - 0.5) * H * 0.6;
+        burstQueue.push({ x: bx, y: by, time: Date.now() });
+        lastMove = Date.now();
+      }
+    }, 6000);
+
+    // ─── RESIZE ───────────────────────────────────────────
+    window.addEventListener('resize', () => {
+      resize();
+      // Re-home particles loosely
+      for (const p of particles) {
+        if (Math.random() > 0.5) {
+          p.homeX = (Math.random() - 0.5) * W * 1.2;
+          p.homeY = (Math.random() - 0.5) * H * 1.2;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
