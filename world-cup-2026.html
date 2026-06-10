@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 — The New Era</title>
+<style>
+/* =============================================
+   1. CSS VARIABLES & RESET
+   ============================================= */
+:root {
+  --gold: #ffd700;
+  --gold-light: #ffed4a;
+  --gold-dark: #b8860b;
+  --teal: #00f0ff;
+  --red: #ff3b3b;
+  --blue: #3b82ff;
+  --bg: #060a18;
+  --bg-card: rgba(255, 255, 255, 0.04);
+  --bg-card-hover: rgba(255, 215, 0, 0.08);
+  --glass: rgba(255, 255, 255, 0.06);
+  --text: #e8e8f0;
+  --text-dim: rgba(255, 255, 255, 0.5);
+  --radius: 14px;
+  --shadow-gold: 0 0 30px rgba(255, 215, 0, 0.15);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* =============================================
+   2. PARTICLE CANVAS
+   ============================================= */
+#particleCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* =============================================
+   3. MAIN CONTAINER
+   ============================================= */
+main {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* =============================================
+   4. HERO SECTION
+   ============================================= */
+.hero {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+  position: relative;
+}
+.hero-flags {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  animation: fadeInDown 0.8s ease both;
+}
+.hero-flags span {
+  filter: drop-shadow(0 0 20px rgba(255,255,255,0.15));
+  transition: transform 0.3s ease;
+}
+.hero-flags span:hover { transform: translateY(-5px) scale(1.1); }
+.hero-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--teal);
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  padding: 0.4rem 1.2rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+  animation: fadeInDown 0.8s 0.1s ease both;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 10vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+  animation: shimmerText 4s ease infinite, fadeInUp 1s 0.2s both;
+  filter: drop-shadow(0 0 50px rgba(255, 215, 0, 0.3));
+}
+.hero h1 .year-num {
+  background: linear-gradient(135deg, #ff3b3b, #ffd700, #3b82ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  color: var(--text-dim);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  animation: fadeInUp 1s 0.4s both;
+}
+.hero-sub .usa { color: #ff3b3b; }
+.hero-sub .can { color: #ff3b3b; }
+.hero-sub .mex { color: #3b82ff; }
+
+/* =============================================
+   5. COUNTDOWN
+   ============================================= */
+.countdown-section {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+  animation: fadeInUp 1s 0.5s both;
+}
+.countdown-item {
+  text-align: center;
+  min-width: 70px;
+}
+.countdown-num {
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.countdown-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+}
+.kickoff-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--teal);
+  background: rgba(0, 240, 255, 0.06);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  padding: 0.3rem 1rem;
+  border-radius: 100px;
+  margin-top: 0.5rem;
+  animation: pulseBadge 2s ease-in-out infinite;
+}
+
+/* =============================================
+   6. TROPHY CSS ART (smaller, alongside)
+   ============================================= */
+.trophy-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin: 0.5rem 0 1rem;
+  animation: fadeInUp 1s 0.3s both;
+}
+.trophy {
+  width: 70px;
+  height: 110px;
+  position: relative;
+  filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.4));
+  animation: trophyGlow 3s ease-in-out infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+.trophy-globe {
+  width: 36px;
+  height: 36px;
+  background: radial-gradient(circle at 35% 30%, #fff2a0, #ffd700 40%, #c9950a 70%, #8b6914);
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), inset 0 -3px 8px rgba(0,0,0,0.3);
+  z-index: 2;
+}
+.trophy-globe::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(255,255,255,0.08) 7px, rgba(255,255,255,0.08) 8px), repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(255,255,255,0.08) 7px, rgba(255,255,255,0.08) 8px);
+  z-index: 3;
+}
+.trophy-globe::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 7px;
+  width: 10px; height: 6px;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  z-index: 4;
+}
+.trophy-figures {
+  position: absolute;
+  top: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42px;
+  height: 42px;
+  z-index: 1;
+}
+.trophy-figures::before, .trophy-figures::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 8px;
+  height: 38px;
+  background: linear-gradient(to right, #c9950a, #ffd700, #c9950a);
+  border-radius: 4px 4px 0 0;
+}
+.trophy-figures::before { left: 6px; transform: rotate(-12deg); transform-origin: bottom center; }
+.trophy-figures::after { right: 6px; transform: rotate(12deg); transform-origin: bottom center; }
+.trophy-base {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 16px;
+  background: linear-gradient(180deg, #ffd700, #b8860b, #8b6914);
+  border-radius: 2px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.trophy-base::after {
+  content: '2026';
+  font-size: 5px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #4a3000;
+  text-shadow: 0 1px 0 rgba(255,215,0,0.3);
+}
+.trophy-base::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 40px;
+  height: 4px;
+  background: linear-gradient(180deg, #c9950a, #8b6914);
+  border-radius: 2px 2px 0 0;
+}
+.trophy-rim {
+  position: absolute;
+  top: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 4px;
+  background: linear-gradient(90deg, #8b6914, #ffd700, #c9950a, #ffd700, #8b6914);
+  border-radius: 2px;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(255,215,0,0.3);
+}
+.host-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 100px;
+  padding: 0.3rem 1rem;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+/* =============================================
+   7. FORMAT SECTION
+   ============================================= */
+.section-title {
+  text-align: center;
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  color: var(--text);
+  margin: 2.5rem 0 1.5rem;
+  letter-spacing: 1px;
+  position: relative;
+}
+.section-title span {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0.5rem auto 0;
+}
+
+.format-path {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 1rem 0.5rem;
+  margin-bottom: 1rem;
+}
+.format-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  background: var(--bg-card);
+  border: 1px solid rgba(255,215,0,0.08);
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  min-width: 70px;
+  transition: all 0.3s ease;
+}
+.format-step:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(255,215,0,0.2);
+  transform: translateY(-3px);
+}
+.format-step .fs-num {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--gold);
+}
+.format-step .fs-label {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.format-arrow {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  opacity: 0.4;
+}
+
+/* =============================================
+   8. HOST CITIES
+   ============================================= */
+.host-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.host-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 0.8rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0;
+  transform: translateY(20px);
+  cursor: default;
+}
+.host-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.host-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(255,215,0,0.2);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 0 20px rgba(255,215,0,0.1);
+}
+.host-card .hc-flag { font-size: 1.5rem; }
+.host-card .hc-city {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin: 0.3rem 0 0.1rem;
+}
+.host-card .hc-stadium {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+}
+.host-card .hc-country {
+  display: inline-block;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  margin-top: 0.2rem;
+}
+
+/* =============================================
+   9. GROUP STAGE
+   ============================================= */
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.group-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255,215,0,0.06);
+  border-radius: var(--radius);
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0;
+  transform: translateY(20px);
+}
+.group-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.group-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(255,215,0,0.15);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-gold);
+}
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255,215,0,0.08);
+  margin-bottom: 0.6rem;
+}
+.group-letter {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+.group-matches {
+  font-size: 0.55rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.group-team {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.4rem;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+.group-team:hover {
+  background: rgba(255,255,255,0.03);
+}
+.group-team .gt-flag { font-size: 1.1rem; width: 1.5rem; text-align: center; flex-shrink: 0; }
+.group-team .gt-name { font-size: 0.75rem; font-weight: 500; flex: 1; }
+.group-team .gt-pot { font-size: 0.5rem; color: var(--text-dim); opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
+
+/* =============================================
+   10. OPENING MATCH SPOTLIGHT
+   ============================================= */
+.opener-section {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin: 1.5rem 0;
+  border-radius: 20px;
+  background: radial-gradient(ellipse at center, rgba(255,215,0,0.04) 0%, transparent 70%);
+  border: 1px solid rgba(255,215,0,0.1);
+  overflow: hidden;
+  position: relative;
+}
+.opener-section::before {
+  content: '';
+  position: absolute;
+  top: -80%; left: -50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(from 0deg at 50% 50%, transparent, rgba(255,0,0,0.02), transparent, rgba(0,60,255,0.02), transparent);
+  animation: rotateGlow 10s linear infinite;
+}
+.opener-vs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.opener-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+.opener-team .ot-flag { font-size: 3.5rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); }
+.opener-team .ot-name { font-size: 1.2rem; font-weight: 700; }
+.opener-vs-text {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--gold);
+  text-shadow: 0 0 30px rgba(255,215,0,0.3);
+  animation: pulseVs 2s ease-in-out infinite;
+}
+.opener-info {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  position: relative;
+  z-index: 1;
+}
+.opener-info strong { color: var(--gold); }
+.opener-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--teal);
+  border: 1px solid rgba(0,240,255,0.15);
+  background: rgba(0,240,255,0.05);
+  padding: 0.2rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 0.8rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* =============================================
+   11. KEYFRAME ANIMATIONS
+   ============================================= */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmerText {
+  0%, 100% { filter: drop-shadow(0 0 40px rgba(255,215,0,0.3)); }
+  50% { filter: drop-shadow(0 0 70px rgba(255,215,0,0.6)); }
+}
+@keyframes trophyGlow {
+  0%, 100% { filter: drop-shadow(0 0 30px rgba(255,215,0,0.3)) translateY(0); }
+  50% { filter: drop-shadow(0 0 60px rgba(255,215,0,0.6)) translateY(-3px); }
+}
+@keyframes pulseBadge {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes pulseVs {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+@keyframes rotateGlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* =============================================
+   12. CONFETTI
+   ============================================= */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  animation: confettiFall linear forwards;
+}
+
+/* =============================================
+   13. RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+  .host-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .groups-grid { grid-template-columns: 1fr; }
+  .format-path { gap: 0.3rem; }
+  .format-step { min-width: 55px; padding: 0.4rem 0.6rem; }
+  .format-step .fs-num { font-size: 1rem; }
+  .format-step .fs-label { font-size: 0.45rem; }
+  .format-arrow { font-size: 0.8rem; }
+  .countdown-section { gap: 1rem; }
+  .countdown-item { min-width: 55px; }
+  .countdown-num { font-size: 1.5rem; }
+  .trophy { width: 55px; height: 85px; }
+  .trophy-globe { width: 28px; height: 28px; top: 8px; }
+  .trophy-figures { top: 26px; width: 32px; height: 32px; }
+  .trophy-figures::before, .trophy-figures::after { height: 28px; width: 6px; }
+  .trophy-base { width: 38px; height: 12px; }
+  .trophy-base::after { font-size: 4px; }
+  .trophy-rim { width: 26px; top: 32px; height: 3px; }
+  .opener-team .ot-flag { font-size: 2.5rem; }
+  .opener-team .ot-name { font-size: 1rem; }
+  .opener-vs-text { font-size: 1.5rem; }
+}
+
+/* =============================================
+   14. SCROLLBAR
+   ============================================= */
+::-webkit-scrollbar { width: 6px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,215,0,0.4); }
+</style>
+</head>
+<body>
+
+<!-- Canvas -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- Main -->
+<main>
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-flags">
+      <span>🇺🇸</span>
+      <span>🇨🇦</span>
+      <span>🇲🇽</span>
+    </div>
+    <div class="hero-badge">FIFA World Cup • 48 Teams • 3 Nations</div>
+    <h1>THE <span class="year-num">2026</span> ERA</h1>
+    <p class="hero-sub">
+      <span class="usa">USA</span> · <span class="can">Canada</span> · <span class="mex">Mexico</span>
+      &nbsp;•&nbsp; June 11 → July 19
+    </p>
+    <div class="trophy-row">
+      <div class="trophy">
+        <div class="trophy-globe"></div>
+        <div class="trophy-figures"></div>
+        <div class="trophy-rim"></div>
+        <div class="trophy-base"></div>
+      </div>
+      <span class="host-tag">🌎 First 48-team World Cup</span>
+    </div>
+  </header>
+
+  <!-- Countdown -->
+  <div class="countdown-section" id="countdown">
+    <div class="countdown-item">
+      <div class="countdown-num" id="cdDays">00</div>
+      <div class="countdown-label">Days</div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-num" id="cdHours">00</div>
+      <div class="countdown-label">Hours</div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-num" id="cdMins">00</div>
+      <div class="countdown-label">Minutes</div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-num" id="cdSecs">00</div>
+      <div class="countdown-label">Seconds</div>
+    </div>
+  </div>
+  <div style="text-align:center;">
+    <span class="kickoff-badge">⚽ Opening Match: Mexico vs Canada — Tomorrow!</span>
+  </div>
+
+  <!-- Tournament Format -->
+  <h2 class="section-title"><span>Tournament</span> Format</h2>
+  <div class="format-path">
+    <div class="format-step"><span class="fs-num">48</span><span class="fs-label">Teams</span></div>
+    <span class="format-arrow">→</span>
+    <div class="format-step"><span class="fs-num">12</span><span class="fs-label">Groups × 4</span></div>
+    <span class="format-arrow">→</span>
+    <div class="format-step"><span class="fs-num">32</span><span class="fs-label">Knockout</span></div>
+    <span class="format-arrow">→</span>
+    <div class="format-step"><span class="fs-num">16</span><span class="fs-label">Round of 16</span></div>
+    <span class="format-arrow">→</span>
+    <div class="format-step"><span class="fs-num">8</span><span class="fs-label">Quarter-finals</span></div>
+    <span class="format-arrow">→</span>
+    <div class="format-step"><span class="fs-num">4</span><span class="fs-label">Semi-finals</span></div>
+    <span class="format-arrow">→</span>
+    <div class="format-step"><span class="fs-num">2</span><span class="fs-label">Final</span></div>
+    <span class="format-arrow">→</span>
+    <div class="format-step" style="border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.06);">
+      <span class="fs-num">🏆</span><span class="fs-label">Champion</span>
+    </div>
+  </div>
+
+  <!-- Opening Match Spotlight -->
+  <div class="opener-section">
+    <div class="opener-badge">🔴 LIVE TOMORROW • ESTADIO AZTECA</div>
+    <div class="opener-vs">
+      <div class="opener-team">
+        <span class="ot-flag">🇲🇽</span>
+        <span class="ot-name">Mexico</span>
+      </div>
+      <div class="opener-vs-text">VS</div>
+      <div class="opener-team">
+        <span class="ot-flag">🇨🇦</span>
+        <span class="ot-name">Canada</span>
+      </div>
+    </div>
+    <div class="opener-info">
+      <strong>Estadio Azteca</strong> • Mexico City • <strong>June 11, 2026</strong>
+      <br>Group A • Matchday 1
+    </div>
+  </div>
+
+  <!-- Host Cities -->
+  <h2 class="section-title"><span>16 Host</span> Cities</h2>
+  <div class="host-grid" id="hostGrid"></div>
+
+  <!-- Group Stage -->
+  <h2 class="section-title"><span>Group</span> Stage</h2>
+  <div class="groups-grid" id="groupsGrid"></div>
+
+  <!-- Final Info -->
+  <div style="text-align:center;margin-top:2.5rem;padding:1.5rem;border-top:1px solid rgba(255,215,0,0.08);">
+    <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:3px;color:var(--text-dim);margin-bottom:0.5rem;">The Road Ends Here</div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--gold);">🏆 Final — July 19, 2026</div>
+    <div style="font-size:0.8rem;color:var(--text-dim);">MetLife Stadium • East Rutherford, New Jersey</div>
+  </div>
+
+  <div style="text-align:center;margin-top:2rem;font-size:0.65rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;opacity:0.4;">
+    ⚽ Who will lift the trophy? • World Cup 2026
+  </div>
+</main>
+
+<script>
+/* =============================================
+   DATA
+   ============================================= */
+const groups = [
+  { letter: 'A', teams: [
+    { name: 'Mexico', flag: '🇲🇽', pot: 1 },
+    { name: 'Canada', flag: '🇨🇦', pot: 1 },
+    { name: 'New Zealand', flag: '🇳🇿', pot: 3 },
+    { name: 'Türkiye', flag: '🇹🇷', pot: 4 }
+  ]},
+  { letter: 'B', teams: [
+    { name: 'Portugal', flag: '🇵🇹', pot: 1 },
+    { name: 'Croatia', flag: '🇭🇷', pot: 2 },
+    { name: 'Algeria', flag: '🇩🇿', pot: 3 },
+    { name: 'Saudi Arabia', flag: '🇸🇦', pot: 4 }
+  ]},
+  { letter: 'C', teams: [
+    { name: 'France', flag: '🇫🇷', pot: 1 },
+    { name: 'Ukraine', flag: '🇺🇦', pot: 2 },
+    { name: 'Ecuador', flag: '🇪🇨', pot: 3 },
+    { name: 'Indonesia', flag: '🇮🇩', pot: 4 }
+  ]},
+  { letter: 'D', teams: [
+    { name: 'Brazil', flag: '🇧🇷', pot: 1 },
+    { name: 'Nigeria', flag: '🇳🇬', pot: 2 },
+    { name: 'South Korea', flag: '🇰🇷', pot: 3 },
+    { name: 'Slovakia', flag: '🇸🇰', pot: 4 }
+  ]},
+  { letter: 'E', teams: [
+    { name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', pot: 1 },
+    { name: 'Senegal', flag: '🇸🇳', pot: 2 },
+    { name: 'Iran', flag: '🇮🇷', pot: 3 },
+    { name: 'Bolivia', flag: '🇧🇴', pot: 4 }
+  ]},
+  { letter: 'F', teams: [
+    { name: 'Argentina', flag: '🇦🇷', pot: 1 },
+    { name: 'Morocco', flag: '🇲🇦', pot: 2 },
+    { name: 'Japan', flag: '🇯🇵', pot: 3 },
+    { name: 'Slovenia', flag: '🇸🇮', pot: 4 }
+  ]},
+  { letter: 'G', teams: [
+    { name: 'Italy', flag: '🇮🇹', pot: 1 },
+    { name: 'USA', flag: '🇺🇸', pot: 1 },
+    { name: 'Cameroon', flag: '🇨🇲', pot: 3 },
+    { name: 'Iraq', flag: '🇮🇶', pot: 4 }
+  ]},
+  { letter: 'H', teams: [
+    { name: 'Spain', flag: '🇪🇸', pot: 1 },
+    { name: 'Uruguay', flag: '🇺🇾', pot: 2 },
+    { name: 'Australia', flag: '🇦🇺', pot: 3 },
+    { name: 'Hungary', flag: '🇭🇺', pot: 4 }
+  ]},
+  { letter: 'I', teams: [
+    { name: 'Netherlands', flag: '🇳🇱', pot: 1 },
+    { name: 'Ghana', flag: '🇬🇭', pot: 2 },
+    { name: 'Serbia', flag: '🇷🇸', pot: 3 },
+    { name: 'Panama', flag: '🇵🇦', pot: 4 }
+  ]},
+  { letter: 'J', teams: [
+    { name: 'Germany', flag: '🇩🇪', pot: 1 },
+    { name: 'Egypt', flag: '🇪🇬', pot: 2 },
+    { name: 'Paraguay', flag: '🇵🇾', pot: 3 },
+    { name: 'Qatar', flag: '🇶🇦', pot: 4 }
+  ]},
+  { letter: 'K', teams: [
+    { name: 'Belgium', flag: '🇧🇪', pot: 1 },
+    { name: 'Denmark', flag: '🇩🇰', pot: 2 },
+    { name: 'Tunisia', flag: '🇹🇳', pot: 3 },
+    { name: 'Costa Rica', flag: '🇨🇷', pot: 4 }
+  ]},
+  { letter: 'L', teams: [
+    { name: 'Switzerland', flag: '🇨🇭', pot: 1 },
+    { name: 'Poland', flag: '🇵🇱', pot: 2 },
+    { name: 'Chile', flag: '🇨🇱', pot: 3 },
+    { name: 'UAE', flag: '🇦🇪', pot: 4 }
+  ]}
+];
+
+const hostCities = [
+  { city: 'Mexico City', stadium: 'Estadio Azteca', country: 'Mexico', flag: '🇲🇽' },
+  { city: 'Guadalajara', stadium: 'Estadio Akron', country: 'Mexico', flag: '🇲🇽' },
+  { city: 'Monterrey', stadium: 'Estadio BBVA', country: 'Mexico', flag: '🇲🇽' },
+  { city: 'Toronto', stadium: 'BMO Field', country: 'Canada', flag: '🇨🇦' },
+  { city: 'Vancouver', stadium: 'BC Place', country: 'Canada', flag: '🇨🇦' },
+  { city: 'Seattle', stadium: 'Lumen Field', country: 'USA', flag: '🇺🇸' },
+  { city: 'San Francisco', stadium: "Levi's Stadium", country: 'USA', flag: '🇺🇸' },
+  { city: 'Los Angeles', stadium: 'SoFi Stadium', country: 'USA', flag: '🇺🇸' },
+  { city: 'Kansas City', stadium: 'Arrowhead Stadium', country: 'USA', flag: '🇺🇸' },
+  { city: 'Dallas', stadium: 'AT&T Stadium', country: 'USA', flag: '🇺🇸' },
+  { city: 'Houston', stadium: 'NRG Stadium', country: 'USA', flag: '🇺🇸' },
+  { city: 'Atlanta', stadium: 'Mercedes-Benz Stadium', country: 'USA', flag: '🇺🇸' },
+  { city: 'Philadelphia', stadium: 'Lincoln Financial Field', country: 'USA', flag: '🇺🇸' },
+  { city: 'Boston', stadium: 'Gillette Stadium', country: 'USA', flag: '🇺🇸' },
+  { city: 'New York', stadium: 'MetLife Stadium', country: 'USA', flag: '🇺🇸' },
+  { city: 'Miami', stadium: 'Hard Rock Stadium', country: 'USA', flag: '🇺🇸' }
+];
+
+/* =============================================
+   PARTICLE SYSTEM
+   ============================================= */
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let animId;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+class Particle {
+  constructor() { this.reset(); this.y = Math.random() * canvas.height; }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = -10;
+    this.size = Math.random() * 2.5 + 1;
+    this.speedY = Math.random() * 0.3 + 0.1;
+    this.speedX = (Math.random() - 0.5) * 0.2;
+    this.opacity = Math.random() * 0.5 + 0.2;
+    // Mix of gold, red, blue, white
+    const r = Math.random();
+    if (r < 0.4) this.color = [255, 215, 0];     // gold
+    else if (r < 0.6) this.color = [255, 59, 59]; // red
+    else if (r < 0.8) this.color = [59, 130, 255]; // blue
+    else this.color = [255, 255, 255];            // white
+    this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+    this.twinkleOffset = Math.random() * Math.PI * 2;
+  }
+  update(time) {
+    this.y += this.speedY;
+    this.x += this.speedX + Math.sin(time * 0.0003 + this.twinkleOffset) * 0.1;
+    const twinkle = Math.sin(time * this.twinkleSpeed + this.twinkleOffset) * 0.3 + 0.7;
+    this.currentOpacity = this.opacity * twinkle;
+    if (this.y > canvas.height + 10) this.reset();
+    if (this.x < -10) this.x = canvas.width + 10;
+    if (this.x > canvas.width + 10) this.x = -10;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    const [r, g, b] = this.color;
+    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.currentOpacity})`;
+    ctx.shadowColor = `rgba(${r}, ${g}, ${b}, 0.4)`;
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+function initParticles() {
+  particles = [];
+  const count = Math.min(100, Math.floor(canvas.width * canvas.height / 14000));
+  for (let i = 0; i < count; i++) particles.push(new Particle());
+}
+
+function animateParticles(time) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(time); p.draw(); });
+  animId = requestAnimationFrame(animateParticles);
+}
+
+resizeCanvas();
+initParticles();
+animateParticles(0);
+window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+
+/* =============================================
+   RENDER HOST CITIES
+   ============================================= */
+const hostGrid = document.getElementById('hostGrid');
+hostCities.forEach((h, i) => {
+  const card = document.createElement('div');
+  card.className = 'host-card';
+  card.style.transitionDelay = `${i * 0.05}s`;
+  card.innerHTML = `
+    <div class="hc-flag">${h.flag}</div>
+    <div class="hc-city">${h.city}</div>
+    <div class="hc-stadium">${h.stadium}</div>
+    <div class="hc-country">${h.country}</div>
+  `;
+  hostGrid.appendChild(card);
+});
+
+/* =============================================
+   RENDER GROUPS
+   ============================================= */
+const groupsGrid = document.getElementById('groupsGrid');
+groups.forEach((g, gi) => {
+  const card = document.createElement('div');
+  card.className = 'group-card';
+  card.style.transitionDelay = `${gi * 0.06}s`;
+  card.innerHTML = `
+    <div class="group-header">
+      <span class="group-letter">Group ${g.letter}</span>
+      <span class="group-matches">3 matchdays</span>
+    </div>
+    ${g.teams.map(t => `
+      <div class="group-team">
+        <span class="gt-flag">${t.flag}</span>
+        <span class="gt-name">${t.name}</span>
+        <span class="gt-pot">Pot ${t.pot}</span>
+      </div>
+    `).join('')}
+  `;
+  groupsGrid.appendChild(card);
+});
+
+/* =============================================
+   INTERSECTION OBSERVER (scroll animations)
+   ============================================= */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+// Observe all animateable cards
+document.querySelectorAll('.group-card, .host-card, .champion-section').forEach(el => observer.observe(el));
+
+// Trigger host cards too (they're dynamically added)
+setTimeout(() => {
+  document.querySelectorAll('.host-card, .group-card').forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+  });
+}, 100);
+
+/* =============================================
+   COUNTDOWN TIMER (to June 11, 2026 00:00 UTC-5)
+   ============================================= */
+function updateCountdown() {
+  const now = new Date();
+  // Opening match: Mexico vs Canada, June 11, 2026, Estadio Azteca (UTC-6)
+  // Let's use 12:00 UTC-6 = 18:00 UTC
+  const opener = new Date('2026-06-11T18:00:00Z');
+  const diff = opener - now;
+
+  if (diff <= 0) {
+    document.getElementById('cdDays').textContent = '⚽';
+    document.getElementById('cdHours').textContent = 'LIVE';
+    document.getElementById('cdMins').textContent = '⚽';
+    document.getElementById('cdSecs').textContent = 'NOW';
+    return;
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+  document.getElementById('cdDays').textContent = String(days).padStart(2, '0');
+  document.getElementById('cdHours').textContent = String(hours).padStart(2, '0');
+  document.getElementById('cdMins').textContent = String(mins).padStart(2, '0');
+  document.getElementById('cdSecs').textContent = String(secs).padStart(2, '0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* =============================================
+   CONFETTI (trigger after scrolling)
+   ============================================= */
+let confettiFired = false;
+
+function launchConfetti() {
+  if (confettiFired) return;
+  confettiFired = true;
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+
+  const colors = ['#ffd700', '#ff3b3b', '#3b82ff', '#ffed4a', '#ff6b6b', '#00f0ff'];
+  const shapes = ['■', '●', '▲', '★', '♦'];
+
+  for (let i = 0; i < 100; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.color = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.fontSize = `${Math.random() * 10 + 5}px`;
+    piece.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
+    piece.style.animationDelay = `${Math.random() * 2}s`;
+    piece.style.opacity = Math.random() * 0.7 + 0.3;
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.remove(), 5000);
+}
+
+// Fire confetti when user scrolls to bottom
+window.addEventListener('scroll', () => {
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+    launchConfetti();
+  }
+});
+
+console.log('🏆 World Cup 2026 — The New Era loaded!');
+</script>
+</body>
+</html>
